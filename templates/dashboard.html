@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Supply Chain Analytics
+    </title>
+
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <header>
+
+        <div>
+
+            <h1>
+                Supply Chain Analytics
+            </h1>
+
+            <p>
+                Cloud-Based Supply Chain Management Dashboard
+            </p>
+
+        </div>
+
+        <div class="status">
+            ● System Online
+        </div>
+
+    </header>
+
+
+    <!-- KPI CARDS -->
+
+    <section class="kpi-grid">
+
+
+        <div class="card">
+
+            <h3>
+                Total Orders
+            </h3>
+
+            <div class="value">
+                {{ "{:,}".format(total_orders) }}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+                Total Sales
+            </h3>
+
+            <div class="value">
+                ${{ "{:,.0f}".format(total_sales) }}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+                Total Customers
+            </h3>
+
+            <div class="value">
+                {{ "{:,}".format(total_customers) }}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+                Total Profit
+            </h3>
+
+            <div class="value">
+                ${{ "{:,.0f}".format(total_profit) }}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+                Average Order Value
+            </h3>
+
+            <div class="value">
+                ${{ "{:,.2f}".format(average_order_value) }}
+            </div>
+
+        </div>
+
+
+        <div class="card warning">
+
+            <h3>
+                Late Delivery
+            </h3>
+
+            <div class="value">
+                {{ "{:.2f}".format(late_delivery_rate) }}%
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- CHARTS -->
+
+    <section class="chart-grid">
+
+
+        <div class="chart-card large">
+
+            <h2>
+                Monthly Sales
+            </h2>
+
+            <div id="monthlyChart"></div>
+
+        </div>
+
+
+        <div class="chart-card">
+
+            <h2>
+                Top Product Categories
+            </h2>
+
+            <div id="categoryChart"></div>
+
+        </div>
+
+
+        <div class="chart-card">
+
+            <h2>
+                Sales by Region
+            </h2>
+
+            <div id="regionChart"></div>
+
+        </div>
+
+
+        <div class="chart-card">
+
+            <h2>
+                Orders by Shipping Mode
+            </h2>
+
+            <div id="shippingChart"></div>
+
+        </div>
+
+
+        <div class="chart-card">
+
+            <h2>
+                Delivery Performance
+            </h2>
+
+            <div id="deliveryChart"></div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            Supply Chain Analytics Platform
+            | Flask + Pandas + AWS
+        </p>
+
+    </footer>
+
+</div>
+
+
+<script>
+
+    // ========================================================
+    // MONTHLY SALES
+    // ========================================================
+
+    const monthlyLabels =
+        {{ monthly_labels | tojson }};
+
+    const monthlySales =
+        {{ monthly_sales | tojson }};
+
+
+    Plotly.newPlot(
+        "monthlyChart",
+
+        [{
+            x: monthlyLabels,
+            y: monthlySales,
+            type: "scatter",
+            mode: "lines+markers"
+        }],
+
+        {
+            margin: {
+                t: 20,
+                r: 20,
+                b: 50,
+                l: 60
+            },
+
+            xaxis: {
+                title: "Month"
+            },
+
+            yaxis: {
+                title: "Sales"
+            }
+        },
+
+        {
+            responsive: true
+        }
+    );
+
+
+    // ========================================================
+    // CATEGORY
+    // ========================================================
+
+    const categoryLabels =
+        {{ category_labels | tojson }};
+
+    const categorySales =
+        {{ category_sales | tojson }};
+
+
+    Plotly.newPlot(
+        "categoryChart",
+
+        [{
+            x: categorySales,
+            y: categoryLabels,
+
+            type: "bar",
+            orientation: "h"
+        }],
+
+        {
+            margin: {
+                t: 20,
+                r: 20,
+                b: 50,
+                l: 150
+            }
+        },
+
+        {
+            responsive: true
+        }
+    );
+
+
+    // ========================================================
+    // REGION
+    // ========================================================
+
+    const regionLabels =
+        {{ region_labels | tojson }};
+
+    const regionSales =
+        {{ region_sales | tojson }};
+
+
+    Plotly.newPlot(
+        "regionChart",
+
+        [{
+            labels: regionLabels,
+            values: regionSales,
+
+            type: "pie"
+        }],
+
+        {
+            margin: {
+                t: 20,
+                r: 20,
+                b: 20,
+                l: 20
+            }
+        },
+
+        {
+            responsive: true
+        }
+    );
+
+
+    // ========================================================
+    // SHIPPING
+    // ========================================================
+
+    const shippingLabels =
+        {{ shipping_labels | tojson }};
+
+    const shippingOrders =
+        {{ shipping_orders | tojson }};
+
+
+    Plotly.newPlot(
+        "shippingChart",
+
+        [{
+            x: shippingLabels,
+            y: shippingOrders,
+
+            type: "bar"
+        }],
+
+        {
+            margin: {
+                t: 20,
+                r: 20,
+                b: 80,
+                l: 50
+            }
+        },
+
+        {
+            responsive: true
+        }
+    );
+
+
+    // ========================================================
+    // DELIVERY
+    // ========================================================
+
+    const deliveryLabels =
+        {{ delivery_labels | tojson }};
+
+    const deliveryOrders =
+        {{ delivery_orders | tojson }};
+
+
+    Plotly.newPlot(
+        "deliveryChart",
+
+        [{
+            labels: deliveryLabels,
+            values: deliveryOrders,
+
+            type: "pie"
+        }],
+
+        {
+            margin: {
+                t: 20,
+                r: 20,
+                b: 20,
+                l: 20
+            }
+        },
+
+        {
+            responsive: true
+        }
+    );
+
+</script>
+
+</body>
+
+</html>

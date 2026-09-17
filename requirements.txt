@@ -1,0 +1,6 @@
+Flask
+pandas
+plotly
+pymysql
+boto3
+python-dotenv
